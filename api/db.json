@@ -1,0 +1,12 @@
+{
+  "todos": [
+    {
+      "title": "New todo",
+      "notes": "",
+      "star": false,
+      "done": false,
+      "type": "",
+      "id": 1
+    }
+  ]
+}

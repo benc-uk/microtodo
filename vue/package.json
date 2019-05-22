@@ -1,6 +1,8 @@
 {
   "name": "microtodo",
   "version": "0.1.1",
+  "author": "Ben Coleman",
+  "license": "MIT",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -10,7 +12,6 @@
   "dependencies": {
     "core-js": "^2.6.5",
     "vue": "^2.6.10",
-    "vuedraggable": "^2.20.0",
     "vuetify": "^1.5.5"
   },
   "devDependencies": {

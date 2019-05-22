@@ -1,57 +1,70 @@
 <template>
 <v-app dark>
   <v-toolbar app dark color="blue darken-1">
-    <v-toolbar-side-icon></v-toolbar-side-icon>
     <v-toolbar-title class="white--text"><v-icon>assignment</v-icon> Micro Todo</v-toolbar-title>
     <v-spacer></v-spacer>
+
     <v-btn large icon @click="todoCreate">
       <v-icon large>add</v-icon>
     </v-btn>
+
     <v-btn large icon>
       <v-icon @click="refresh" large>refresh</v-icon>
     </v-btn>
-    <!-- <v-btn large icon>
-      <v-icon large>search</v-icon>
-    </v-btn>
+
     <v-btn large icon>
-      <v-icon large>delete</v-icon>
-    </v-btn> -->
+      <v-icon @click="showSettings = true" large>settings</v-icon>
+    </v-btn>    
   </v-toolbar>
 
   <v-content>
     <v-container grid-list-lg>
       <v-layout column>
-        <draggable v-model="todos" :sort="true">
+        <!-- <draggable v-model="todos" :sort="true"> -->
           <transition-group name="todoAnim" tag="div">
-            <todo v-for="todo in todos" :key="todo.id" :todo="todo" @todoUpdate="todoUpdate($event)" @todoDelete="todoDelete($event)">
+            <todo v-for="todo in orderedTodos" :key="todo.id" :todo="todo" @todoUpdate="todoUpdate($event)" @todoDelete="todoDelete($event)">
             </todo>   
           </transition-group>
-        </draggable>
+        <!-- </draggable> -->
       </v-layout>
 
-      <v-card v-if="todos.length == 0">
-        <v-card-title class="blue-grey lighten-3 black--text"><div class="title">No tasks!</div></v-card-title>
-        <v-container text-xs-center>
-          <v-layout justify-center row>
-            <v-flex >
-              <v-btn large @click="todoCreate" color="success"><v-icon>add</v-icon> &nbsp; NEW TASK</v-btn>
-            </v-flex>
-          </v-layout>
-        </v-container>        
-      </v-card>
+      <div v-if="todos && todos.length == 0" class="text-xs-center">
+        <v-btn large @click="todoCreate" color="success" >NEW TASK</v-btn>
+      </div>
+
+      <!-- error display -->
+      <v-alert v-if="error" :value="true" type="error">
+        <div class="title">API Error</div> <br> {{ error }}
+      </v-alert>
+
+      <!-- settings -->
+      <v-dialog v-model="showSettings" persistent max-width="600px">
+        <div class="blue-grey darken-4 pa-1">
+          <div class="info text-xs-center pa-3 headline">SETTINGS</div>
+          <v-text-field autofocus hint="Use a full URL e.g. <b>http://foo/api</b> or a path, e.g. <b>/api</b>. Do not include a trailing slash!" label="API Endpoint" class="pa-3" v-model="apiEndpoint" color="light-blue"></v-text-field>
+          <p class="text-xs-center "><v-btn color="green" large @click="refresh(); showSettings = false"> OK </v-btn></p>
+        </div>
+      </v-dialog>
+  
+      <!-- Loading spinner -->
+      <v-dialog :value="!todos && !error" hide-overlay persistent width="300">
+        <v-card color="primary" dark>
+          <v-card-text>Loading data from API<v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
 
     </v-container>
   </v-content>
-
   <v-footer app> &nbsp; Micro Todo {{ version }}</v-footer>
+  <v-btn fixed dark fab bottom right color="green" app @click="todoCreate"> <v-icon>add</v-icon> </v-btn>
 </v-app>
 </template>
 
 <script>
 import Todo from './components/Todo'
-import apiMixin from "../mixins/api.js"
-import draggable from "vuedraggable"
-import _ from 'lodash'
+import apiMixin from "./mixins/api.js"
+import lodash from 'lodash'
 import packageJson from '../package.json'
 var interval
 
@@ -59,7 +72,7 @@ export default {
   name: 'App',
 
   components: {
-    Todo, draggable
+    Todo //, draggable
   },
 
   mixins: [ apiMixin ],
@@ -68,15 +81,15 @@ export default {
     return {
       todos: null,
       updateQueue: {},
-      version: packageJson.version
+      version: packageJson.version,
+      error: null,
+      showSettings: false,
+      apiEndpoint: process.env.VUE_APP_API_ENDPOINT
     }
   },
 
   computed: {
-    orderedTodos: {
-      get() { return _.orderBy(this.todos, ['id'], ['desc']) },
-      set(v) { this.todos = v }
-    }
+    orderedTodos() { return lodash.orderBy(this.todos, ['id'], ['desc']) }
   },
 
   methods: {
@@ -92,7 +105,7 @@ export default {
 
     todoCreate() {
       let newTodo = {
-        title: "New todo", notes: "", star: false, done: false, type: ""
+        title: "", notes: "", star: false, done: false, type: "", modified: null
       }
       this.apiPostTodo(newTodo)
       .then(result => { 
@@ -101,8 +114,12 @@ export default {
     },
 
     refresh() {
+      this.todos = null
+      this.error = null
+      this.updateQueue = {}
       this.apiGetTodos()
-        .then(result => this.todos = result)
+      .then(result => this.todos = result)
+      .catch(err => this.error = err)
     }
   },
 
@@ -126,14 +143,13 @@ export default {
 </script>
 
 <style>
-
 .todoAnim-enter-active, .todoAnim-leave-active  {
   transition: all .6s ease;
 }
 .todoAnim-leave-active {
   transition: all .4s ease;
-  position: absolute;
-  width: 100%
+  position: fixed;
+  /* width: 80% */
 }
 .todoAnim-enter, .todoAnim-leave-to {
   transform: translateX(20px);

@@ -1,7 +1,14 @@
-FROM node:lts-alpine
+#
+# Build the API as a standalone container
+# Using json-server
+#
+
+FROM node:10.15.3-alpine
 WORKDIR /app
-EXPOSE 3000
-ADD api/package.json .
+EXPOSE 8001
+COPY api/package*.json ./
 RUN npm install
-ADD api/db.empty.json ./db.json
-ENTRYPOINT ["npm", "run", "start"]
+COPY api/db.empty.json ./db.json
+COPY api/routes.json .
+ENTRYPOINT [ "./node_modules/.bin/json-server", "--host", "0.0.0.0", "--port", "8001", \
+             "--routes", "routes.json", "db.json" ]

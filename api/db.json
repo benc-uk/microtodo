@@ -1,12 +1,31 @@
 {
   "todos": [
     {
-      "title": "New todo",
+      "title": "Stuff",
       "notes": "",
       "star": false,
-      "done": false,
-      "type": "",
+      "done": true,
+      "type": "Reminder",
+      "modified": "2019-05-22T16:42:29.168Z",
       "id": 1
+    },
+    {
+      "title": "Another thing",
+      "notes": "Blah",
+      "star": true,
+      "done": false,
+      "type": "Idea",
+      "modified": "2019-05-21T06:12:07.513Z",
+      "id": 2
+    },
+    {
+      "title": "Dork!",
+      "notes": "This is junk",
+      "star": false,
+      "done": false,
+      "type": "Note",
+      "modified": "2019-05-22T16:44:05.188Z",
+      "id": 3
     }
   ]
 }

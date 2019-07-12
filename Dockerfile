@@ -4,7 +4,7 @@
 #
 
 # Build and bundle the Vue.js app with Vue CLI 3 https://cli.vuejs.org/
-FROM node:10.15.3-alpine as spabuild
+FROM node:10-alpine as spabuild
 WORKDIR /build
 COPY vue/package*.json ./
 RUN npm install --silent
@@ -17,7 +17,7 @@ RUN npm run build
 
 # Set up container to run JSON Server
 # Also have it serve the static bundled Vue.js SPA from the public dir
-FROM node:10.15.3-alpine
+FROM node:10-alpine
 WORKDIR /app
 EXPOSE 8000
 COPY api/package*.json ./

@@ -1,7 +1,12 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify/lib'
-import 'vuetify/src/stylus/app.styl'
 
-Vue.use(Vuetify, {
-  iconfont: 'md',
-})
+Vue.use(Vuetify)
+
+const opts = {
+  icons: {
+    iconfont: 'md', // 'mdi' || 'mdiSvg' || 'md' || 'fa' || 'fa4'
+  }
+}
+
+export default new Vuetify(opts)

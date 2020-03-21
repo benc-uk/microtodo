@@ -10,6 +10,7 @@ COPY vue/package*.json ./
 RUN npm install --silent
 COPY vue/public ./public
 COPY vue/src ./src
+COPY vue/.env.production .
 COPY vue/.eslintrc.js .
 RUN npm run build
 

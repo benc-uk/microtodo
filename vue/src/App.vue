@@ -1,6 +1,6 @@
 <template>
-<v-app dark>
-  <v-toolbar app dark color="blue darken-1">
+<v-app-bar id="micro">
+  <v-toolbar dark color="blue darken-1">
     <v-toolbar-title class="white--text"><v-icon>assignment</v-icon> Micro Todo</v-toolbar-title>
     <v-spacer></v-spacer>
 
@@ -58,7 +58,7 @@
   </v-content>
   <v-footer app> &nbsp; Micro Todo {{ version }}</v-footer>
   <v-btn fixed dark fab bottom right color="green" app @click="todoCreate"> <v-icon>add</v-icon> </v-btn>
-</v-app>
+</v-app-bar>
 </template>
 
 <script>

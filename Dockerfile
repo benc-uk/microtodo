@@ -1,4 +1,6 @@
 #
+# ==== COMBINED SINGLE CONTAINER ====
+#
 # Build the Vue App + API as *combined single container*
 # Using json-server to serve BOTH the API and the static Vue.js app
 #
@@ -10,6 +12,7 @@ COPY vue/package*.json ./
 RUN npm install --silent
 COPY vue/public ./public
 COPY vue/src ./src
+COPY vue/.env.production .
 COPY vue/.eslintrc.js .
 RUN npm run build
 
